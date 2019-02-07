@@ -27,66 +27,45 @@
 /// THE SOFTWARE.
 
 
-// TODO: Implement Stack
+import XCTest
+@testable import DataStructures
 
-struct Stack<Element: Equatable>: Equatable {
-    init () {}
+final class QueueTestCase: XCTestCase {
+    var queueArray = QueueArray<Int>()
+    var queueStack = QueueStack<Int>()
 
-    init(_ elements: [Element]) {
-        storage = elements
+    override func setUp() {
+        queueArray.enqueue(1)
+        queueArray.enqueue(2)
+        queueArray.enqueue(3)
+
+        queueStack.enqueue(1)
+        queueStack.enqueue(2)
+        queueStack.enqueue(3)
     }
 
-    private var storage: [Element] = .init()
-
-    func peek() -> Element? {
-        return storage.last
+    func test_enqueueArray() {
+        XCTAssert(queueArray.peek == 1)
     }
 
-    mutating func push (_ element: Element) {
-        storage.append(element)
+    func test_enqueueStack() {
+        XCTAssert(queueStack.peek == 1)
     }
 
-    @discardableResult
-    mutating func pop() -> Element? {
-        return storage.popLast()
+    func test_dequeueArray() {
+        queueArray.dequeue()
+        queueArray.dequeue()
+        XCTAssert(queueArray.dequeue() == 3)
+        queueArray.dequeue()
+        XCTAssert(queueArray.isEmpty == true)
     }
 
-    func isEmpty() -> Bool {
-        return storage.isEmpty
+    func test_dequeueStack() {
+        queueStack.dequeue()
+        queueStack.dequeue()
+        XCTAssert(queueStack.dequeue() == 3)
+        queueStack.dequeue()
+        XCTAssert(queueStack.isEmpty == true)
     }
+
 }
-
-extension Stack: CustomStringConvertible {
-    var description: String {
-        return storage.map { "\($0)"}.joined(separator: " ")
-    }
-}
-
-extension Stack: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Element...) {
-        storage = elements
-    }
-}
-
-extension Stack where Element == Character {
-    func isBalanced() -> Bool {
-        // Do comparison with copy to avoid destruction
-        var tempStack = self
-        var left = 0
-        var right = 0
-        while tempStack.peek() != nil {
-            if let temp = tempStack.pop() {
-                if temp == "(" {
-                    left += 1
-                    continue
-                }
-                if temp == ")" {
-                    right += 1
-                    continue
-                }
-            }
-        }
-        return left == right
-    }
-}
-

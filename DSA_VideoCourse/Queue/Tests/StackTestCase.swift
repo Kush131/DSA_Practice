@@ -27,66 +27,42 @@
 /// THE SOFTWARE.
 
 
-// TODO: Implement Stack
+import XCTest
+@testable import DataStructures
 
-struct Stack<Element: Equatable>: Equatable {
-    init () {}
-
-    init(_ elements: [Element]) {
-        storage = elements
-    }
-
-    private var storage: [Element] = .init()
-
-    func peek() -> Element? {
-        return storage.last
-    }
-
-    mutating func push (_ element: Element) {
-        storage.append(element)
-    }
-
-    @discardableResult
-    mutating func pop() -> Element? {
-        return storage.popLast()
-    }
-
-    func isEmpty() -> Bool {
-        return storage.isEmpty
-    }
+final class StackTestCase: XCTestCase {
+  var stack = Stack<Int>()
+  
+  override func setUp() {
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.push(4)
+  }
+  
+  func test_push() {
+    XCTAssertEqual(stack.description, "1 2 3 4")
+  }
+  
+  func test_pop() {
+    XCTAssertEqual(stack.pop(), 4)
+  }
+  
+  func test_peek() {
+    XCTAssertEqual(stack.peek(), 4)
+  }
+  
+  func test_isEmpty() {
+    XCTAssertFalse(stack.isEmpty)
+  }
+  
+  func test_initWithArray() {
+    let array = [1, 2, 3, 4]
+    XCTAssertEqual(stack, Stack(array))
+  }
+  
+  func test_arrayLiteral() {
+    let stack: Stack = ["blueberry", "plain", "potato"]
+    XCTAssertEqual(stack, ["blueberry", "plain", "potato"])
+  }
 }
-
-extension Stack: CustomStringConvertible {
-    var description: String {
-        return storage.map { "\($0)"}.joined(separator: " ")
-    }
-}
-
-extension Stack: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Element...) {
-        storage = elements
-    }
-}
-
-extension Stack where Element == Character {
-    func isBalanced() -> Bool {
-        // Do comparison with copy to avoid destruction
-        var tempStack = self
-        var left = 0
-        var right = 0
-        while tempStack.peek() != nil {
-            if let temp = tempStack.pop() {
-                if temp == "(" {
-                    left += 1
-                    continue
-                }
-                if temp == ")" {
-                    right += 1
-                    continue
-                }
-            }
-        }
-        return left == right
-    }
-}
-

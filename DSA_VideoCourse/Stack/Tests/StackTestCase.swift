@@ -49,7 +49,7 @@ final class StackTestCase: XCTestCase {
     }
 
     func test_peek() {
-        XCTAssertEqual(stack.peek(), 1)
+        XCTAssertEqual(stack.peek(), 5)
     }
 
     func test_isEmpty() {

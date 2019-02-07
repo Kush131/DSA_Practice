@@ -27,66 +27,64 @@
 /// THE SOFTWARE.
 
 
-// TODO: Implement Stack
+//TODO: Queue Protocol
+protocol Queue {
+    associatedtype Element
 
-struct Stack<Element: Equatable>: Equatable {
-    init () {}
+    var isEmpty: Bool { get }
+    var peek: Element? { get }
+    mutating func enqueue(_ element: Element)
+    mutating func dequeue() -> Element?
 
-    init(_ elements: [Element]) {
-        storage = elements
+}
+
+struct QueueArray<T>: Queue {
+    //TODO: Queue Array
+    private var storage: [T] = .init()
+    var isEmpty: Bool {
+        return storage.isEmpty
+    }
+    var peek: T? {
+        return storage.first
     }
 
-    private var storage: [Element] = .init()
-
-    func peek() -> Element? {
-        return storage.last
-    }
-
-    mutating func push (_ element: Element) {
+    mutating func enqueue(_ element: T) {
         storage.append(element)
     }
 
     @discardableResult
-    mutating func pop() -> Element? {
-        return storage.popLast()
-    }
-
-    func isEmpty() -> Bool {
-        return storage.isEmpty
+    mutating func dequeue() -> T? {
+        return storage.isEmpty ? nil : storage.remove(at: 0)
     }
 }
 
-extension Stack: CustomStringConvertible {
-    var description: String {
-        return storage.map { "\($0)"}.joined(separator: " ")
-    }
-}
 
-extension Stack: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Element...) {
-        storage = elements
-    }
-}
 
-extension Stack where Element == Character {
-    func isBalanced() -> Bool {
-        // Do comparison with copy to avoid destruction
-        var tempStack = self
-        var left = 0
-        var right = 0
-        while tempStack.peek() != nil {
-            if let temp = tempStack.pop() {
-                if temp == "(" {
-                    left += 1
-                    continue
-                }
-                if temp == ")" {
-                    right += 1
-                    continue
-                }
-            }
+struct QueueStack<T>: Queue {
+    //TODO: Queue Stack
+    private var enqueueStack: [T] = .init()
+    private var dequeueStack: [T] = .init()
+
+    var isEmpty: Bool {
+        return enqueueStack.isEmpty && dequeueStack.isEmpty
+    }
+
+    var peek: T? {
+        return !dequeueStack.isEmpty ? dequeueStack.last : enqueueStack.first
+    }
+
+    mutating func enqueue(_ element: T) {
+        enqueueStack.append(element)
+    }
+
+    @discardableResult
+    mutating func dequeue() -> T? {
+        if dequeueStack.isEmpty {
+            dequeueStack = enqueueStack.reversed()
+            enqueueStack.removeAll()
         }
-        return left == right
+        return dequeueStack.popLast()
     }
-}
+    
 
+}

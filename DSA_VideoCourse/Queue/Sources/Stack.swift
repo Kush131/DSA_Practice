@@ -27,66 +27,42 @@
 /// THE SOFTWARE.
 
 
-// TODO: Implement Stack
-
 struct Stack<Element: Equatable>: Equatable {
-    init () {}
-
-    init(_ elements: [Element]) {
-        storage = elements
-    }
-
-    private var storage: [Element] = .init()
-
-    func peek() -> Element? {
-        return storage.last
-    }
-
-    mutating func push (_ element: Element) {
-        storage.append(element)
-    }
-
-    @discardableResult
-    mutating func pop() -> Element? {
-        return storage.popLast()
-    }
-
-    func isEmpty() -> Bool {
-        return storage.isEmpty
-    }
+  private var storage: [Element] = []
+  var isEmpty: Bool {
+    return peek() == nil
+  }
+  
+  init() { }
+  
+  init(_ elements: [Element]) {
+    storage = elements
+  }
+ 
+  func peek() -> Element? {
+    return storage.last
+  }
+  
+  mutating func push(_ element: Element) {
+    storage.append(element)
+  }
+  
+  @discardableResult
+  mutating func pop() -> Element? {
+    return storage.popLast()
+  }
 }
 
 extension Stack: CustomStringConvertible {
-    var description: String {
-        return storage.map { "\($0)"}.joined(separator: " ")
-    }
+  var description: String {
+    return storage
+    .map { "\($0)"}
+    .joined(separator: " ")
+  }
 }
 
 extension Stack: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Element...) {
-        storage = elements
-    }
+  init(arrayLiteral elements: Element...) {
+    storage = elements
+  }
 }
-
-extension Stack where Element == Character {
-    func isBalanced() -> Bool {
-        // Do comparison with copy to avoid destruction
-        var tempStack = self
-        var left = 0
-        var right = 0
-        while tempStack.peek() != nil {
-            if let temp = tempStack.pop() {
-                if temp == "(" {
-                    left += 1
-                    continue
-                }
-                if temp == ")" {
-                    right += 1
-                    continue
-                }
-            }
-        }
-        return left == right
-    }
-}
-
